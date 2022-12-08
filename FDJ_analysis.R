@@ -5,10 +5,8 @@ library(kableExtra)
 
 ### extra analyses for final push, Nov-Dec 2022
 
-setwd("/home/paolo/Dropbox/FDJ temptation/Paolo results/")
-
 #### data import ####
-df <- read_csv("../data/tentation.csv")
+df <- read_csv("Data/tentation.csv")
 
 #### data cleaning  #####
 

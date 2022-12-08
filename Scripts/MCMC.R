@@ -1,16 +1,7 @@
 
-## ecdf plot from Paul's version
-mcmc <- read_csv("results_bayesian_paul.CSV")
-
-mcmc %>% 
-  pivot_longer(-n, names_to = "group", values_to = "values") %>% 
-  arrange(n) %>% 
-  ggplot(aes(n, values, color = group))+
-  geom_line()
-
 ## density plot (I like it better)
 
-mcmc <- read_csv("raw_data_treat_diff.csv")
+mcmc <- read_csv("Data/MCMC.csv")
 
 mcmc <- mcmc %>% 
   rename("Soft commit" = `Limit not applied`, 
