@@ -12,7 +12,7 @@ groups <- df %>%
 ## creating the last counterfactual group
 extragroup <-  groups %>% 
   filter(situation == "Soft commit") %>% 
-  mutate(pumps = if_else(period>5, limit, pumps)) %>%               # applying the limit
+  mutate(pumps = if_else(period>5 & pumps>limit, limit, pumps)) %>%               # applying the limit
   mutate(situation = "Soft commit counterfactual")   %>% 
   mutate(subject = paste0(subject,"extra")) %>% 
   select(subject, treatment, situation, phase, period, pumps)
