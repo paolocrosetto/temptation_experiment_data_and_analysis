@@ -11,16 +11,26 @@ mcmc <- mcmc %>%
   pivot_longer(everything(), names_to = "group", values_to = "values") %>% 
   mutate(group = as.factor(group),
          group = fct_relevel(group, "Baseline", "Limit refused", "Soft commit")) 
+
+## label data set
+labs <- mcmc %>% 
+  group_by(group) %>% 
+  summarise(xPos = median(density(values)$x),
+            yPos = max(density(values)$y))
+
 mcmc %>% 
   ggplot(aes(values, fill = group))+
   geom_vline(xintercept = 0, color = "red", linetype = "dashed")+
   geom_density(alpha = .3, size = .2, outline.type = "upper")+
+  geom_label(data = labs, aes(x = xPos, y = yPos, label = group, color = group), 
+                            fill = "white", hjust = 0.5, nudge_y = 0.2)+
   scale_fill_brewer(name = "", palette = "Set1", direction = -1)+
+  scale_color_brewer(name = "", palette = "Set1", direction = -1)+
   labs(x = "Mean difference in pumps in rounds 6-10 from rounds 2-5",
        y = "Density")+
   hrbrthemes::theme_ipsum()+
   theme(panel.grid.minor = element_blank(), 
-        legend.position = "bottom")
+        legend.position = "none")
 ggsave("Figures/kde_mcmc.png", width = 16/1.9, height = 12/1.9, units = "in", dpi = 320)
 
 
