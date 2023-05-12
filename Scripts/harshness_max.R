@@ -16,6 +16,8 @@ binding %>%
   filter(bound != "weak") %>% 
   mutate(bound = if_else(bound == "not", "Not bindnging limit", "Binding limit")) %>% 
   mutate(harshness = if_else(harshness < -1, -1, harshness)) %>% 
+  ## this line just "inverts" the axes; quick-and-dirty hack for Prague presentation, TODO mae it consistent
+  mutate(harshness = - harshness) %>% 
   ggplot()+
   aes(x = harshness, color = bound, fill = bound)+
   geom_density(trim = T, alpha =.3)+
@@ -24,7 +26,7 @@ binding %>%
                      guide = guide_legend(reverse = T))+
   scale_fill_brewer(name = "", palette = "Set1", direction = 1,
                     guide = guide_legend(reverse = T))+
-  labs(x = "Harshness of the limit")+
+  labs(x = "Self-set limit with respect to previous mean play")+
   theme_ipsum_ps()+
   theme(legend.position = "bottom",
         panel.grid.minor = element_blank())
