@@ -28,6 +28,5 @@ erratic %>%
   theme_ipsum()+
   theme(panel.grid.minor = element_blank(),
         panel.grid.major = element_line(colour = "grey95"),
-        strip.text = element_text(face = "italic", size = 14),
-        plot.background = element_rect(fill = "white", color = "white"))
+        strip.text = element_text(face = "italic", size = 14))
 ggsave("Figures/erratic.png", width = 16/1.2, height = 12/1.2, units = "in", dpi = 320)
