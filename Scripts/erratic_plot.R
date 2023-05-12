@@ -29,4 +29,23 @@ erratic %>%
   theme(panel.grid.minor = element_blank(),
         panel.grid.major = element_line(colour = "grey95"),
         strip.text = element_text(face = "italic", size = 14))
-ggsave("Figures/erratic.png", width = 16/1.2, height = 12/1.2, units = "in", dpi = 320)
+ggsave("Figures/erratic.png", width = 16/1.2, height = 9/1.2, units = "in", dpi = 320)
+
+
+## just some subjects for presentation's sake
+ss <- df %>% select(subject) %>% distinct() %>% pull(subject) %>% sample(12)
+erratic %>% 
+  filter(subject %in% ss) %>% 
+  group_by(subject) %>% 
+  mutate(meanpumps = mean(pumps)) %>% 
+  ggplot()+
+  aes(x = as.factor(period), y = pumps, group = subject)+
+  geom_line(alpha = 1, color = "grey20")+
+  geom_hline(aes(yintercept = meanpumps), color = "red", linetype = "dotted")+
+  facet_wrap(~subject)+
+  labs(x = "Round", y = "Pumps")+
+  theme_ipsum()+
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major = element_line(colour = "grey95"),
+        strip.text = element_text(face = "italic", size = 14))
+ggsave("Figures/erratic_some.png", width = 16/1.2, height = 9/1.2, units = "in", dpi = 320)
