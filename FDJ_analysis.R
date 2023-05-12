@@ -19,7 +19,7 @@ df <- df %>%
 
 # treatment, period as a nice variable
 df <- df %>% 
-  mutate(treatment = case_when(treatment == 4 ~ "Temptation", 
+  mutate(treatment = case_when(treatment == 4 ~ "Commitment", 
                                treatment == 0 ~ "Baseline")) %>% 
   mutate(period = as.factor(period))
 
@@ -29,9 +29,9 @@ df <- df %>%
   mutate(limit_requested = !is.na(last(limit)),
          limit_applied = last(hard) == 1) %>% 
   mutate(case = case_when(treatment == "Baseline" ~ "Baseline",
-                          treatment == "Temptation" & limit_requested == F ~ "Limit not requested",
-                          treatment == "Temptation" & limit_requested == T & limit_applied == F ~ "Soft commitment",
-                          treatment == "Temptation" & limit_requested == T & limit_applied == T ~ "Hard commitment"))
+                          treatment == "Commitment" & limit_requested == F ~ "Limit not requested",
+                          treatment == "Commitment" & limit_requested == T & limit_applied == F ~ "Soft commitment",
+                          treatment == "Commitment" & limit_requested == T & limit_applied == T ~ "Hard commitment"))
   
 
 
