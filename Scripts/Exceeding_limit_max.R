@@ -18,7 +18,7 @@ binding <- df %>%
   left_join(stat_before, by = "subject") %>% 
   left_join(stat_after, by = "subject") %>% 
   filter(period == 6) %>% 
-  filter(treatment == "Temptation") %>% 
+  filter(treatment == "Commitment") %>% 
   mutate(binding = maxpumps - limit,
          m_binding = meanpumps - limit) %>% 
   mutate(bound = case_when(binding > 0 ~ "strict",

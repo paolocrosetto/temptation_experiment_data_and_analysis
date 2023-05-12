@@ -36,10 +36,10 @@ mean_pumps_1 %>%
 t.test(df$pumps[df$treatment == "Baseline"]~df$phase[df$treatment=="Baseline"]) %>% broom::tidy()
 
 # commitment, before-after
-t.test(df$pumps[df$treatment == "Temptation"]~df$phase[df$treatment=="Temptation"]) %>% broom::tidy()  
+t.test(df$pumps[df$treatment == "Commitment"]~df$phase[df$treatment=="Commitment"]) %>% broom::tidy()  
 
 # before, across treatments
-t.test(df$pumps[df$phase == "Before"]~df$treatment[df$phase == "Before"]) %>% broom::tidy() 
+t.test(df$pumps[df$phase == "before"]~df$treatment[df$phase == "before"]) %>% broom::tidy() 
 
 # after, across treatments
-t.test(df$pumps[df$phase == "After"]~df$treatment[df$phase == "After"]) %>% broom::tidy()  
+t.test(df$pumps[df$phase == "after"]~df$treatment[df$phase == "after"]) %>% broom::tidy()  
