@@ -53,3 +53,28 @@ binding %>%
   filter(!is.na(m_bound)) %>% 
   mutate(share = n/sum(n))
 
+## some stats about demand for commitment. Who are those people? 
+
+## requested vs not requested
+
+binding <- binding %>% 
+  mutate(limbehavior = case_when(limit_requested == F ~ "not requested", 
+                                 limit_requested == T ~ "requested"))
+  #mutate(limbehavior = case_when(limit_requested == F ~ "not requested", 
+  #                               limit_requested == T & bound == "not" ~ "not binding",
+  #                               limit_requested == T & bound == "weak" ~ "weakly binding",
+  #                               limit_requested == T & bound == "strict" ~ "strictly binding"))
+  
+binding %>% 
+  group_by(limbehavior) %>% 
+  summarise(age = mean(age, na.rm = T), quest = mean(gambling_quest, na.rm = T), share_m = 1 - mean(female, na.rm = T))
+
+## are things different
+paired_plus_cohen(binding, "age", "limbehavior")
+paired_plus_cohen(binding, "female", "limbehavior")
+paired_plus_cohen(binding, "gambling_quest", "limbehavior")
+paired_plus_cohen(binding, "type", "limbehavior")
+
+chisq.test(binding$female, binding$limbehavior) %>% tidy()
+chisq.test(binding$profession, binding$limbehavior) %>% tidy()
+
