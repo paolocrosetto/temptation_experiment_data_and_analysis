@@ -1,9 +1,16 @@
-library(tidyverse)
-library(hrbrthemes)
-library(magrittr)
-library(kableExtra)
+## FDJ paper data analysis
+##
+## by Paolo Crosetto
 
-### extra analyses for final push, Nov-Dec 2022
+library(tidyverse)      ## R dialect used here
+library(hrbrthemes)     ## plot theme
+library(magrittr)       ## for extra pipes
+library(kableExtra)     ## formatting and exportin nice tables
+library(gtools)         ## to set up the list of combinations needed to perform pairwise tests over pairs of treatments
+library(esvis)          ## to compute cohen's d effect sizes
+library(broom)          ## to clean test results and coerce them into a data frame
+
+
 
 #### data import ####
 df <- read_csv("Data/temptation_data.csv")
@@ -18,7 +25,7 @@ df <- df %>%
          tempt = player.tentation, limit = player.tentation_limite,
          hard = player.tentation_appliquee, 
          profession = CSP, gambling_quest = can, type = type, 
-         age, gender)
+         age, female)
 
 # treatment, period as a nice variable
 df <- df %>% 
@@ -36,6 +43,35 @@ df <- df %>%
                           treatment == "Commitment" & limit_requested == T & limit_applied == F ~ "Soft commitment",
                           treatment == "Commitment" & limit_requested == T & limit_applied == T ~ "Hard commitment"))
   
+
+## helper function: detailed pairwise t-test and cohen's d
+paired_plus_cohen <- function(data, var1, groupvar) {
+  
+  formula <- as.formula(paste(var1, "~", groupvar))
+  
+  data[[groupvar]] <- as.factor(data[[groupvar]])
+  
+  grouping <- combinations(n = length(levels(data[[groupvar]])),
+                           r = 2, 
+                           v = levels(data[[groupvar]]), 
+                           repeats.allowed = FALSE) %>% as_tibble()
+  
+  tests <- map2_df(grouping$V1, grouping$V2, ~tidy(t.test(formula, 
+                                                          data = data %>% filter(limbehavior %in% c(.x,.y)) )))
+  tests <- tests %>% bind_cols(grouping) %>% 
+    select(group1 = V1, group2 = V2, estimate1, estimate2, diff = estimate, statistic, parameter, p.value)
+  
+  
+  
+  
+  cohen <- data %>% 
+    coh_d(formula)
+  
+  tests %>% 
+    left_join(cohen, by = c("group1" = "limbehavior_ref", "group2" = "limbehavior_foc")) %>% 
+    arrange(p.value) %>% 
+    mutate(p.value = round(p.value, 3))
+}
 
 
 #### Step 1. Period 1 is different from all others  #####
