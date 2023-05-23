@@ -6,7 +6,8 @@ library(kableExtra)
 ### extra analyses for final push, Nov-Dec 2022
 
 #### data import ####
-df <- read_csv("Data/tentation.csv")
+df <- read_csv("Data/temptation_data.csv")
+
 
 #### data cleaning  #####
 
@@ -15,7 +16,9 @@ df <- df %>%
   select(subject = participant.label, period = subsession.round_number, 
          pumps = player.pumps, treatment = player.treatment, 
          tempt = player.tentation, limit = player.tentation_limite,
-         hard = player.tentation_appliquee)
+         hard = player.tentation_appliquee, 
+         profession = CSP, gambling_quest = can, type = type, 
+         age, gender)
 
 # treatment, period as a nice variable
 df <- df %>% 
