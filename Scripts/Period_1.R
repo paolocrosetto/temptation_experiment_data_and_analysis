@@ -3,6 +3,8 @@ t.test(df$pumps[df$period ==1], df$pumps[df$period != 1]) %>% broom::tidy()
 ks.test(df$pumps[df$period ==1], df$pumps[df$period != 1])
 wilcox.test(df$pumps[df$period ==1], df$pumps[df$period != 1])
 
+## what about period 2, or all other periods? 
+pairwise.t.test(df$pumps, df$period, p.adjust.method = "none")
 
 #### plot 1: behavior before the treatment ###
 # nice version for the appendix
