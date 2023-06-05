@@ -53,13 +53,23 @@ testme <- binding %>%
                           values < limit ~ "down")) %>% 
   mutate(hard = as.factor(hard))
 
-## chisq test, BEFORE setting the limit
+## chisq test, soft vs hard BEFORE setting the limit
 table(testme$hard[testme$phase=="b"], testme$case[testme$phase=="b"]) %>% 
   chisq.test() %>% 
   tidy()
 
-## chisq test, AFTER setting the limit
+## chisq test, soft vs hard AFTER setting the limit
 table(testme$hard[testme$phase=="a"], testme$case[testme$phase=="a"]) %>% 
+  chisq.test() %>% 
+  tidy()
+
+## chisq test, before vs after for subjects with HARD commit
+table(testme$phase[testme$hard==1], testme$case[testme$hard==1]) %>% 
+  chisq.test() %>% 
+  tidy()
+
+## chisq test, soft vs hard AFTER setting the limit
+table(testme$phase[testme$hard==0], testme$case[testme$hard==0]) %>% 
   chisq.test() %>% 
   tidy()
 
