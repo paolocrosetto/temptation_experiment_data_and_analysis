@@ -41,6 +41,27 @@ table2 %>%
   add_header_above(c(" " = 1, "Share of subjects who pump ... the self-imposed limit" = 3)) %>% 
   save_kable("Tables/tab_tresh_max.tex") 
 
+## testing if differences exist
+testme <- binding %>% 
+  select(subject, limit, maxpumps, maxpumps_a, hard) %>% 
+  filter(!is.na(limit)) %>% 
+  rename(maxpumps_b = maxpumps) %>% 
+  pivot_longer(starts_with("max"), names_to = c("indicator", "phase"), 
+               names_sep = "_", values_to = "values") %>% 
+  mutate(case = case_when(values > limit ~ "up",
+                          values == limit ~ "at",
+                          values < limit ~ "down")) %>% 
+  mutate(hard = as.factor(hard))
+
+## chisq test, BEFORE setting the limit
+table(testme$hard[testme$phase=="b"], testme$case[testme$phase=="b"]) %>% 
+  chisq.test() %>% 
+  tidy()
+
+## chisq test, AFTER setting the limit
+table(testme$hard[testme$phase=="a"], testme$case[testme$phase=="a"]) %>% 
+  chisq.test() %>% 
+  tidy()
 
 ## mean
 
