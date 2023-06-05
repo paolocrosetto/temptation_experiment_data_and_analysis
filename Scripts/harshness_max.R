@@ -30,7 +30,7 @@ binding %>%
 ggsave("Figures/limit_harshness.png", width = 16/1.9, height = 9/1.9, units = "in", dpi = 320) 
 
 
-## is there a correlation beteen limit harshness and questionnaire results
+## is there a correlation between limit harshness and questionnaire results
 cor.test(binding$harshness, binding$gambling_quest)
 
 ## is there a relationship with gender
