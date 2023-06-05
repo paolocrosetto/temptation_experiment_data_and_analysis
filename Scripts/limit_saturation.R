@@ -16,7 +16,7 @@ sat <- df %>%
             meanpump = mean(pumps)) %>% 
   mutate(saturation = meanpump/limit,
          saturation_trunc = if_else(saturation > 1, 1, saturation)) %>% 
-  arrange(subject, period)
+  arrange(subject)
 
 
 ## raincloud plot 
