@@ -11,7 +11,10 @@ sat <- df %>%
   mutate(phase = fct_relevel(phase, "Rounds 2 -- 5")) %>% 
   mutate(case = as.factor(case), 
          case = fct_relevel(case, "Soft commitment")) %>% 
-  mutate(saturation = pumps/limit,
+  group_by(subject, case, phase) %>% 
+  summarise(limit = last(limit), 
+            meanpump = mean(pumps)) %>% 
+  mutate(saturation = meanpump/limit,
          saturation_trunc = if_else(saturation > 1, 1, saturation)) %>% 
   arrange(subject, period)
 
