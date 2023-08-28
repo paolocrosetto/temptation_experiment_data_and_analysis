@@ -1,5 +1,5 @@
 
-## density plot (I like it better)
+## density plot
 
 mcmc <- read_csv("Data/MCMC.csv")
 
