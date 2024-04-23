@@ -30,3 +30,29 @@ df %>%
 ggsave("Figures/pumps_by_round.png", width = 16/1.9, height = 9/1.9, units = "in", dpi = 320)
 
 
+## pumps by round and by condition (as requested by the referee, and meant for the reply letter)
+
+df %>% 
+  mutate(cases = case_when(treatment == "Baseline" ~ "Baseline", 
+                           treatment == "Commitment" & limit_requested == F ~ "No limit requested", 
+                           treatment == "Commitment" & limit_requested == T & limit_applied == F ~ "Limit requested & not applied",
+                           treatment == "Commitment" & limit_requested == T & limit_applied == T ~ "Limit requested & applied")) %>% 
+  group_by(cases, period) %>% 
+  summarise(m = mean(pumps), 
+            sd = sd(pumps), 
+            sem = sd/sqrt(n()),
+            ci = qt(0.95/2 + 0.5, n()-1),
+            cil = m-1*sem, 
+            cih = m+1*sem) %>% 
+  ggplot(aes(period, m, color = cases))+
+  geom_errorbar(aes(ymin = cil, ymax = cih), width = .1, position = position_dodge(width = 0.2))+
+  geom_point(position = position_dodge(width = 0.2))+
+  geom_line(aes(group = cases), position = position_dodge(width = 0.2), alpha = .3)+
+  theme_ipsum_ps()+
+  scale_color_brewer(palette = "Set1", direction = -1, name = "")+
+  geom_vline(xintercept = 5.5)+
+  labs(x = "Round", y = "Mean pumps")+
+  theme(legend.position = "bottom",
+        panel.grid.minor = element_blank())
+ggsave("Figures/pumps_by_round_by_case.png", width = 16/1.9, height = 9/1.9, units = "in", dpi = 320)
+
