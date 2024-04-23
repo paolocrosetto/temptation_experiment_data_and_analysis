@@ -2,9 +2,9 @@
 ## creating the 4 different subject groups
 groups <- df %>% 
   mutate(situation = case_when(treatment == "Baseline" ~ "Baseline",
-                               treatment == "Temptation" & is.na(limit) ~ "Limit refused",
-                               treatment == "Temptation" & !is.na(limit) & hard == 0 ~ "Soft commit",
-                               treatment == "Temptation" & !is.na(limit) & hard == 1 ~ "Hard commit")) %>% 
+                               treatment == "Commitment" & is.na(limit) ~ "Limit refused",
+                               treatment == "Commitment" & !is.na(limit) & hard == 0 ~ "Soft commit",
+                               treatment == "Commitment" & !is.na(limit) & hard == 1 ~ "Hard commit")) %>% 
   mutate(situation = last(situation)) %>% 
   select(subject, treatment, situation, phase, limit, period, pumps)
 
@@ -31,7 +31,7 @@ means <- groups %>%
   mutate(diff = after-before)
 
 
-means <- means %>% 
+meanstab <- means %>% 
   group_by(situation) %>% 
   summarise(mb = mean(before), ma = mean(after), md = mean(diff),
             sb = sd(before),   sa = sd(after),  sdi = sd(diff)) %>% 
@@ -44,10 +44,26 @@ means <- means %>%
          situation = fct_relevel(situation, "Baseline", "Limit refused", "Soft commit", "Hard commit")) %>% 
   arrange(situation)
 
-# export table
-means %>% 
+  
+
+# export tableof means
+meanstab %>% 
   kbl(format = "latex", booktabs = T, col.names = NULL, align = c('lccc')) %>% 
   kable_styling(full_width = T, ) %>% 
   add_header_above(c(" " = 1, "Rounds 2 -- 5" = 1, "Rounds 6 -- 10" = 1, "Difference" = 1)) %>% 
   column_spec(1, width = "4.2cm") %>% 
   save_kable("Tables/Table_means.tex")  
+
+# export table of pairwise t.test
+means <- means %>% 
+  mutate(situation = as.factor(situation),
+         situation = fct_relevel(situation, "Baseline", "Limit refused", "Soft commit", "Hard commit"))
+  
+meanstest <- pairwise.t.test(means$diff, means$situation)
+
+meanstest$p.value %>% 
+  kbl(digits = 3, format = "latex", booktabs = T, align = c('lccc')) %>% 
+  kable_styling(full_width = T, )%>% 
+  column_spec(1, width = "4.2cm") %>% 
+  save_kable("Tables/Table_tests.tex")  
+
