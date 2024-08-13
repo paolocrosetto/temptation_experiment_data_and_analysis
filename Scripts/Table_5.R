@@ -46,7 +46,7 @@ meanstab <- means %>%
 
   
 
-# export tableof means
+# export table of means
 meanstab %>% 
   kbl(format = "latex", booktabs = T, col.names = NULL, align = c('lccc')) %>% 
   kable_styling(full_width = T, ) %>% 
@@ -54,16 +54,35 @@ meanstab %>%
   column_spec(1, width = "4.2cm") %>% 
   save_kable("Tables/Table_means.tex")  
 
-# export table of pairwise t.test
+## Testing
 means <- means %>% 
   mutate(situation = as.factor(situation),
          situation = fct_relevel(situation, "Baseline", "Limit refused", "Soft commit", "Hard commit"))
-  
-meanstest <- pairwise.t.test(means$diff, means$situation)
+
+
+## 1. replication of MCMC results: mean difference within group before-after, and its significance
+tests1 <- means %>% 
+  group_by(situation) %>% 
+  group_modify(~tidy(t.test(.$diff)))
+
+# exporting table
+tests1 %>% 
+  mutate(estimate = round(estimate, 2), 
+         conf = paste0("(", round(conf.low,2), ", ", round(conf.high, 2), ")"), 
+         p.value = round(p.value, 3)) %>% 
+  select(situation, mean = estimate, conf, p.value) %>% 
+  kbl(digits = 3, format = "latex", col.names = NULL, booktabs = T, align = c('lccc')) %>% 
+  add_header_above(c(" " = 1, "Mean difference" = 1, "95% credible interval" = 1, "t-test p-value" = 1)) %>% 
+  kable_styling(full_width = T, )%>% 
+  column_spec(1, width = "4.4cm") %>% 
+  save_kable("Tables/Table_6.tex")  
+
+## 2. support to visual inspection of Figure 6: difference across groups in the "after" period only  
+meanstest <- pairwise.t.test(means$after, means$situation, p.adjust.method = "none")
 
 meanstest$p.value %>% 
   kbl(digits = 3, format = "latex", booktabs = T, align = c('lccc')) %>% 
   kable_styling(full_width = T, )%>% 
   column_spec(1, width = "4.2cm") %>% 
-  save_kable("Tables/Table_tests.tex")  
+  save_kable("Tables/Table_7.tex")  
 

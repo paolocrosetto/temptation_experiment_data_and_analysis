@@ -108,16 +108,12 @@ source("Scripts/Table_2.R")
 
 
 #### Step 6. Limit saturation ####
-
-## I have 8 more subjects than Paul. Why?? Solve this and then you're fine. 
 source("Scripts/limit_saturation.R")
 
 
 
 #### Step 7. Why using standard inference might be wrong ####
-
 source("Scripts/erratic_plot.R")
-
 
 
 #### Step 8. Risk taking before-after treatment by group ####
