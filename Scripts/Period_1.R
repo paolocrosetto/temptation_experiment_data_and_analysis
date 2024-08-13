@@ -34,9 +34,9 @@ ggsave("Figures/pumps_by_round.png", width = 16/1.9, height = 9/1.9, units = "in
 
 df %>% 
   mutate(cases = case_when(treatment == "Baseline" ~ "Baseline", 
-                           treatment == "Commitment" & limit_requested == F ~ "No limit requested", 
-                           treatment == "Commitment" & limit_requested == T & limit_applied == F ~ "Limit requested & not applied",
-                           treatment == "Commitment" & limit_requested == T & limit_applied == T ~ "Limit requested & applied")) %>% 
+                           treatment == "Commitment" & limit_requested == F ~ "Limit refused", 
+                           treatment == "Commitment" & limit_requested == T & limit_applied == F ~ "Soft commitment",
+                           treatment == "Commitment" & limit_requested == T & limit_applied == T ~ "Hard commitment")) %>% 
   group_by(cases, period) %>% 
   summarise(m = mean(pumps), 
             sd = sd(pumps), 
